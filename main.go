@@ -3,8 +3,11 @@ package main
 import (
 	"bufio"
 	"encoding/csv"
+	"encoding/json"
 	"fmt"
 	"os"
+	"strconv"
+	"time"
 
 	"github.com/dvilela/cursodego/government"
 
@@ -105,19 +108,44 @@ func main() {
 		panic(err)
 	}
 
-	// Files - CSV package
+	// Files - Convert CSV to JSON using csv package
 	if citiesFile, err := os.Open("assets/cities.csv"); err == nil {
-		fmt.Println("Reading cities.csv with csv package...")
 		citiesCSVReader := csv.NewReader(citiesFile)
 		// read all parses the csv in the [][]string format (each line is an array of csv "field")
 		cities, err := citiesCSVReader.ReadAll()
 		if err != nil {
 			panic(err)
 		}
-		for _, city := range cities {
-			fmt.Printf("ID:%s Name:%s State:%s Description:%s\n", city[0], city[1], city[2], city[3])
+		// creates the file name
+		jsonFileName := fmt.Sprintf("temp-cities-%v.json", time.Now().UnixNano())
+		// create the file
+		citiesJSONFile, err := os.Create(jsonFileName)
+		if err != nil {
+			panic(err)
 		}
+		fmt.Printf("Converting cities.csv to %s using csv package and JSON marshal...\n", jsonFileName)
+		jsonWritter := bufio.NewWriter(citiesJSONFile)
+		jsonWritter.WriteRune('[')
+		var city model.City
+		var id int
+		for i, c := range cities {
+			id, _ = strconv.Atoi(c[0])
+			city = model.City{
+				ID:          id,
+				Name:        c[1],
+				State:       c[2],
+				Description: c[3],
+			}
+			cityJSON, _ := json.Marshal(city)
+			jsonWritter.Write(cityJSON)
+			if i < len(cities)-1 {
+				jsonWritter.WriteRune(',')
+			}
+		}
+		jsonWritter.WriteRune(']')
+		jsonWritter.Flush()
 		citiesFile.Close()
+		citiesJSONFile.Close()
 	} else {
 		panic(err)
 	}
