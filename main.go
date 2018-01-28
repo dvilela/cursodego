@@ -77,9 +77,23 @@ func main() {
 	// delete Corolla from slice
 	cars = append(cars[:3], cars[4:]...)
 	fmt.Println("Corolla cutted from cars:", cars, len(cars), cap(cars))
+
+	// Interfaces
+	jojo := model.Bird{"Jojo"}
+	fmt.Printf("%s is saying something: %s\n", jojo.Name, doCluck(jojo))
+	fmt.Printf("%s is saying something: %s\n", jojo.Name, doQuack(jojo))
+
 }
 
 func doSomething() (success bool, err string) {
 	err = "This is not the droid you are looking for"
 	return
+}
+
+func doCluck(c model.Chicken) string {
+	return c.Cluck()
+}
+
+func doQuack(d model.Duck) string {
+	return d.Quack()
 }
