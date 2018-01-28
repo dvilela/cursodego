@@ -9,5 +9,5 @@ import (
 
 // RegisterPerson registers a person in the civil files
 func RegisterPerson(p *model.Person) {
-	p.SetID(string(strconv.Itoa(rand.Int())))
+	p.SetID(strconv.Itoa(rand.Int()))
 }
