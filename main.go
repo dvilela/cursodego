@@ -56,6 +56,27 @@ func main() {
 	if success, err := doSomething(); !success {
 		fmt.Println("[Error] Could not do something. Cause:", err)
 	}
+
+	// Arrays and Slices... Aditional content: https://github.com/golang/go/wiki/SliceTricks
+	var arr1 [5]int // an array. Arrays can NOT be changed. They are already initialized
+	fmt.Println("arr1:", arr1, len(arr1), cap(arr1))
+
+	var slice1 []int // a slice. Slices can be changed
+	fmt.Println("slice1:", slice1, len(slice1), cap(slice1))
+
+	slice2 := make([]string, 5) // declares and initialize the slice
+	fmt.Println("slice2:", slice2, len(slice2), cap(slice2))
+
+	cars := []string{"GTI", "Civic", "Focus", "Corolla"}
+	fmt.Println("cars", cars, len(cars), cap(cars))
+
+	// append to slice
+	cars = append(cars, "Audi_S7")
+	fmt.Println("S7 appended to cars:", cars, len(cars), cap(cars))
+
+	// delete Corolla from slice
+	cars = append(cars[:3], cars[4:]...)
+	fmt.Println("Corolla cutted from cars:", cars, len(cars), cap(cars))
 }
 
 func doSomething() (success bool, err string) {
