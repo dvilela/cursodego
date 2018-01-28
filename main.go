@@ -79,7 +79,9 @@ func main() {
 	fmt.Println("Corolla cutted from cars:", cars, len(cars), cap(cars))
 
 	// Interfaces
-	jojo := model.Bird{"Jojo"}
+	jojo := model.Bird{
+		Name: "Jojo",
+	}
 	fmt.Printf("%s is saying something: %s\n", jojo.Name, doCluck(jojo))
 	fmt.Printf("%s is saying something: %s\n", jojo.Name, doQuack(jojo))
 
