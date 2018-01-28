@@ -1,7 +1,10 @@
 package main
 
 import (
+	"bufio"
+	"encoding/csv"
 	"fmt"
+	"os"
 
 	"github.com/dvilela/cursodego/government"
 
@@ -24,6 +27,7 @@ var (
 )
 
 func main() {
+
 	// Variables
 	msg := "Hello, World!"
 	fmt.Printf("msg: %s\n", msg)
@@ -31,6 +35,7 @@ func main() {
 	fmt.Printf("age: %d\n", Age)
 	fmt.Printf("married: %t\n", Married)
 	fmt.Printf("id: %v\n", id) // v can support multiple types
+
 	// Functions and Loops
 	for i := 0; i <= 10; i++ {
 		fmt.Printf("Factorial of %d: %d\n", i, mathdv.Factorial(uint64(i)))
@@ -42,6 +47,7 @@ func main() {
 			fmt.Println()
 		}
 	}
+
 	// Structs
 	john := model.Person{
 		Name:    "John Doe",
@@ -49,9 +55,11 @@ func main() {
 		Age:     31,
 	}
 	fmt.Printf("[Created] Person 1: %+v\n", john) // +v prints the vars names too
+
 	// Pointers
 	government.RegisterPerson(&john)
 	fmt.Printf("[Registered] Person 1: %+v\n", john)
+
 	// Conditionals
 	if success, err := doSomething(); !success {
 		fmt.Println("[Error] Could not do something. Cause:", err)
@@ -85,6 +93,34 @@ func main() {
 	fmt.Printf("%s is saying something: %s\n", jojo.Name, doCluck(jojo))
 	fmt.Printf("%s is saying something: %s\n", jojo.Name, doQuack(jojo))
 
+	// Files - Scanner
+	if citiesFile, err := os.Open("assets/cities.csv"); err == nil {
+		fmt.Println("Reading cities.csv with scanner...")
+		scanner := bufio.NewScanner(citiesFile)
+		for scanner.Scan() {
+			fmt.Println(scanner.Text())
+		}
+		citiesFile.Close()
+	} else {
+		panic(err)
+	}
+
+	// Files - CSV package
+	if citiesFile, err := os.Open("assets/cities.csv"); err == nil {
+		fmt.Println("Reading cities.csv with csv package...")
+		citiesCSVReader := csv.NewReader(citiesFile)
+		// read all parses the csv in the [][]string format (each line is an array of csv "field")
+		cities, err := citiesCSVReader.ReadAll()
+		if err != nil {
+			panic(err)
+		}
+		for _, city := range cities {
+			fmt.Printf("ID:%s Name:%s State:%s Description:%s\n", city[0], city[1], city[2], city[3])
+		}
+		citiesFile.Close()
+	} else {
+		panic(err)
+	}
 }
 
 func doSomething() (success bool, err string) {
