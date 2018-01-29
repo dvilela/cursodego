@@ -98,18 +98,19 @@ func main() {
 
 	// Files - Scanner
 	if citiesFile, err := os.Open("assets/cities.csv"); err == nil {
+		defer citiesFile.Close()
 		fmt.Println("Reading cities.csv with scanner...")
 		scanner := bufio.NewScanner(citiesFile)
 		for scanner.Scan() {
 			fmt.Println(scanner.Text())
 		}
-		citiesFile.Close()
 	} else {
 		panic(err)
 	}
 
 	// Files - Convert CSV to JSON using csv package
 	if citiesFile, err := os.Open("assets/cities.csv"); err == nil {
+		defer citiesFile.Close()
 		citiesCSVReader := csv.NewReader(citiesFile)
 		// read all parses the csv in the [][]string format (each line is an array of csv "field")
 		cities, err := citiesCSVReader.ReadAll()
@@ -123,6 +124,7 @@ func main() {
 		if err != nil {
 			panic(err)
 		}
+		defer citiesJSONFile.Close()
 		fmt.Printf("Converting cities.csv to %s using csv package and JSON marshal...\n", jsonFileName)
 		jsonWritter := bufio.NewWriter(citiesJSONFile)
 		jsonWritter.WriteRune('[')
@@ -144,8 +146,6 @@ func main() {
 		}
 		jsonWritter.WriteRune(']')
 		jsonWritter.Flush()
-		citiesFile.Close()
-		citiesJSONFile.Close()
 	} else {
 		panic(err)
 	}
